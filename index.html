@@ -426,6 +426,7 @@
     }
 
     .makecode-block select {
+      width: 100%;
       min-width: 180px;
       padding: 3px 6px;
       border: 0;
@@ -433,6 +434,10 @@
       background: transparent;
       color: inherit;
       font: 600 12px/1.2 "Trebuchet MS", sans-serif;
+    }
+
+    .makecode-block.select-block {
+      width: 100%;
     }
 
     .makecode-block select option {
@@ -956,7 +961,7 @@
           <div class="challenge-row practice-row">
             <div>
             <div class="block-workspace" id="blockWorkspace" aria-label="MakeCode block workspace">
-              <div class="makecode-block">
+              <div class="makecode-block select-block">
                 <select data-block="note" aria-label="Choose note action">
                   <option value="wrong">Choose a block...</option>
                   <option value="read">item = piano.Touch()</option>
@@ -965,7 +970,7 @@
                   <option value="distractor">change the piano volume</option>
                 </select>
               </div>
-              <div class="makecode-block">
+              <div class="makecode-block select-block">
                 <select data-block="sound" aria-label="Choose sound action">
                   <option value="wrong">Choose a block...</option>
                   <option value="read">item = piano.Touch()</option>
@@ -974,7 +979,7 @@
                   <option value="distractor">change the piano volume</option>
                 </select>
               </div>
-              <div class="makecode-block">
+              <div class="makecode-block select-block">
                 <select data-block="display" aria-label="Choose display action">
                   <option value="wrong">Choose a block...</option>
                   <option value="read">item = piano.Touch()</option>
