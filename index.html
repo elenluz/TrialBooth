@@ -102,6 +102,54 @@
       width: 100%;
       height: 100%;
       border: 0;
+      display: block;
+    }
+
+    .video-fallback {
+      display: inline-block;
+      margin-top: 10px;
+      color: #d6a653;
+      font-size: 14px;
+    }
+
+    .video-complete {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px solid #4e3825;
+      background: rgba(65, 46, 28, 0.35);
+      color: #e4d9c7;
+      font-size: 14px;
+    }
+
+    .video-complete button {
+      flex: none;
+      border: 1px solid #d6a653;
+      border-radius: 5px;
+      padding: 9px 12px;
+      background: #a97832;
+      color: #fff7e7;
+      font-weight: 750;
+    }
+
+    .challenge-section[hidden] {
+      display: none;
+    }
+
+    @media (max-width: 560px) {
+      .video-stage {
+        aspect-ratio: auto;
+        height: min(62vh, 330px);
+        min-height: 230px;
+      }
+
+      .video-complete {
+        align-items: stretch;
+        flex-direction: column;
+      }
     }
 
     .piano-keys {
@@ -704,11 +752,12 @@
           <iframe
             src="https://drive.google.com/file/d/1kdzDIsYXj4_cHr_GTQLPrgl0Zx0pj-8b/preview"
             title="Guess the Note video"
-            allow="autoplay"
+            allow="autoplay; fullscreen; picture-in-picture"
+            loading="lazy"
             allowfullscreen>
           </iframe>
         </div>
-
+        <a class="video-fallback" href="https://drive.google.com/file/d/1kdzDIsYXj4_cHr_GTQLPrgl0Zx0pj-8b/view" target="_blank" rel="noopener">Open video in a new tab</a>
         <div class="card-body">
           <h3>Meet the programmable interactive robot</h3>
           <p class="muted">
@@ -725,6 +774,10 @@
             connect computers, sensors, and other electronic components.
           </p>
         </div>
+        <div class="video-complete" id="videoComplete">
+          <span>Watch the video to unlock the technical activity.</span>
+          <button id="unlockActivity" type="button">Ready for challenge</button>
+        </div>
         <div class="piano-keys" aria-hidden="true">
           <span class="piano-key black"></span>
           <span class="piano-key black"></span>
@@ -737,7 +790,7 @@
       </article>
     </section>
 
-    <section class="card challenge-section">
+    <section class="card challenge-section" id="challengeSection" hidden>
       <div class="card-body">
         <div class="challenge-header">
           <div>
@@ -844,6 +897,9 @@
 
     const runCode = document.getElementById("runCode");
     const resetCode = document.getElementById("resetCode");
+    const unlockActivity = document.getElementById("unlockActivity");
+    const challengeSection = document.getElementById("challengeSection");
+    const videoComplete = document.getElementById("videoComplete");
     const result = document.getElementById("result");
     const blockSelects = document.querySelectorAll("[data-block]");
     const sampleTitle = document.getElementById("sampleTitle");
@@ -858,6 +914,15 @@
       A: ["01110", "10001", "11111", "10001", "10001"],
       B: ["11110", "10001", "11110", "10001", "11110"]
     };
+
+    unlockActivity.addEventListener("click", () => {
+      challengeSection.hidden = false;
+      videoComplete.querySelector("span").textContent = "Video watched. The technical activity is unlocked.";
+      unlockActivity.textContent = "Activity unlocked";
+      unlockActivity.disabled = true;
+      challengeSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      challengeSection.querySelector("select").focus({ preventScroll: true });
+    });
 
     function shuffleOptions(select) {
       const placeholder = select.querySelector('option[value="wrong"]');
