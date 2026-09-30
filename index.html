@@ -15,7 +15,8 @@
     h1 { margin: 8px 0 14px; font-size: clamp(40px, 8vw, 76px); line-height: .95; }
     h2 { margin: 8px 0 12px; }
     .hero p, .challenge-lead { max-width: 760px; margin: 6px 0; color: #c2b8a7; font-size: 18px; line-height: 1.55; }
-    video, .video-embed { width: 100%; aspect-ratio: 16 / 9; display: block; border: 0; background: #090807; }
+    .video-stage { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid #4e3825; border-radius: 8px; background: #090807; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+    video, .video-embed { width: 100%; height: 100%; display: block; border: 0; background: #090807; }
     .video-fallback { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; margin-top: 10px; color: #d6a653; font-size: 14px; }
     .video-complete { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 12px; padding: 12px 14px; border: 1px solid #4e3825; background: rgba(65,46,28,.35); color: #e4d9c7; }
     .video-complete button { border: 1px solid #d6a653; border-radius: 5px; padding: 10px 14px; background: #a97832; color: #fff7e7; font-weight: 700; }
@@ -107,8 +108,8 @@
       <p>Watch how the TechnoPiano turns musical keys into picture messages.</p>
     </section>
     <article>
-      <iframe class="video-embed" src="https://drive.google.com/file/d/1Q4UexAJOkOYk0YL1V4biaznzTnnXjRNs/preview" title="Piano Messenger video" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
-      <a class="video-fallback" href="https://drive.google.com/file/d/1Q4UexAJOkOYk0YL1V4biaznzTnnXjRNs/view?usp=drive_link" target="_blank" rel="noopener">Open video in a new tab</a>
+      <div class="video-stage"><video controls playsinline preload="metadata" title="Piano Messenger video"><source src="0930.mp4" type="video/mp4" />Your browser cannot play this video.</video></div>
+      <a class="video-fallback" href="0930.mp4" target="_blank" rel="noopener">Open video in a new tab</a>
       <div class="video-complete" id="videoComplete"><span>When you are ready, start the activity.</span><button id="unlockActivity" type="button">Ready for Activity</button></div>
       <div class="piano-keys" aria-hidden="true"><span class="piano-key"></span><span class="piano-key"></span><span class="piano-key"></span><span class="piano-key"></span><span class="piano-key"></span><span class="piano-key"></span><span class="piano-key"></span></div>
     </article>
