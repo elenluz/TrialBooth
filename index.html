@@ -69,6 +69,8 @@
     .drag-options, .message-options { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
     .drag-block, .message-options button { position: relative; padding: 12px 14px 12px 18px; border: 1px solid #79b4d9; border-radius: 4px; background: #24506a; color: #eef8fb; font-weight: 700; box-shadow: inset 0 2px rgba(255,255,255,.12); }
     .drag-block::before { content: ""; position: absolute; top: -5px; left: 12px; width: 18px; height: 5px; border-radius: 3px 3px 0 0; background: inherit; }
+    .drag-block { touch-action: none; user-select: none; -webkit-user-select: none; }
+    .touch-drag-ghost { position: fixed; z-index: 40; pointer-events: none; opacity: .9; transform: translate(-50%, -50%) rotate(2deg); }
     .drop-program, .broken-block { display: inline-block; min-width: 250px; padding: 15px 18px; border: 2px dashed #d6a653; background: #20170f; color: #f4ead8; font: 700 15px/1.3 "SFMono-Regular", Consolas, monospace; }
     .drop-program { position: relative; padding-left: 28px; }
     .drop-program::before { content: ""; position: absolute; top: -6px; left: 12px; width: 18px; height: 6px; border-radius: 3px 3px 0 0; background: #d6a653; }
@@ -127,11 +129,7 @@
     </details>
     <section class="challenge-section" id="challengeSection" hidden><div class="card-body">
       <div class="eyebrow">YOUR CHALLENGE: FIX THE PIANO MESSENGER</div><h2>Uh-oh! Someone changed the program.</h2><p class="challenge-lead">The G key is supposed to show and send a GHOST. But when G is pressed, the TechnoPiano shows an UMBRELLA instead.</p>
-      <div class="instructions"><p><strong>BROKEN PROGRAM</strong></p><p class="program-line">WHEN G KEY PRESSED</p><pre>play note G
-
-show UMBRELLA
-
-radio send "UMBRELLA"</pre></div>
+      <div class="instructions"><p><strong>BROKEN MAKECODE PROGRAM</strong></p><div class="makecode-stack"><div class="makecode-block event">when G key pressed</div><div class="makecode-block sound">play note G</div><div class="makecode-block display">show UMBRELLA</div><div class="makecode-block radio">radio send "UMBRELLA"</div></div></div>
       <div class="messenger-stage" id="showStage"><div class="eyebrow">STEP 1: FIX THE PICTURE</div><div class="expected-output"><div><h3>EXPECTED OUTPUT WHEN G IS PRESSED</h3><p>The piano should play G and show a <strong>GHOST</strong> on the micro:bit screen.</p><div class="output-preview"><div class="led-matrix" aria-label="5 by 5 LED ghost picture"><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led"></span><span class="led on"></span><span class="led"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led"></span><span class="led"></span><span class="led"></span><span class="led on"></span><span class="led on"></span><span class="led"></span><span class="led on"></span><span class="led"></span><span class="led on"></span></div><strong>GHOST</strong></div></div><div class="makecode-stack"><div class="makecode-block event">when G key pressed</div><div class="makecode-block sound">play note G</div><div class="makecode-block question drop-program" id="showDrop" tabindex="0" aria-label="Drop the replacement show block here">show ?</div></div></div><p class="muted">Use the ghost preview to choose the missing <strong>show</strong> block. Drag the matching block directly onto <strong>show ?</strong>.</p><div class="drag-options"><button class="drag-block" draggable="true" data-drag-value="HEART">show HEART</button><button class="drag-block" draggable="true" data-drag-value="HOUSE">show HOUSE</button><button class="drag-block" draggable="true" data-drag-value="GHOST">show GHOST</button><button class="drag-block" draggable="true" data-drag-value="UMBRELLA">show UMBRELLA</button></div><p class="result" id="showResult">Drag the correct block onto the show ? block above.</p></div>
       <div class="messenger-stage" id="sendStage" hidden><div class="eyebrow">ALMOST THERE!</div><p class="challenge-lead">The picture on this TechnoPiano is fixed... but the other TechnoPiano still receives an umbrella!</p><div class="instructions"><p><strong>BROKEN BLOCK</strong></p><div class="makecode-stack"><div class="makecode-block radio">radio send "UMBRELLA"</div></div></div><p class="muted">Choose the correct message:</p><div class="message-options"><button data-message="HEART" type="button">radio send "HEART"</button><button data-message="HOUSE" type="button">radio send "HOUSE"</button><button data-message="GHOST" type="button">radio send "GHOST"</button><button data-message="UMBRELLA" type="button">radio send "UMBRELLA"</button></div><p class="result" id="sendResult">Choose the message that matches the picture.</p></div>
       <div class="messenger-stage" id="successStage" hidden><div class="eyebrow">SUCCESS!</div><h2>You fixed Piano Messenger!</h2><p>Now when G is pressed:</p><div class="flow">G KEY <span>↓</span> PLAY NOTE G <span>↓</span> SHOW GHOST <span>↓</span> SEND "GHOST" <span>↓</span> OTHER TECHNOPIANO RECEIVES THE MESSAGE</div><div class="makecode-stack"><div class="makecode-block event">when G key pressed</div><div class="makecode-block sound">play note G</div><div class="makecode-block display">show GHOST</div><div class="makecode-block radio">radio send "GHOST"</div></div><div class="instructions"><p><strong>WHAT DID YOU JUST DO?</strong></p><p>You debugged a program.</p><p>The G key is an <strong>INPUT</strong>. The note, picture, and wireless message are <strong>OUTPUTS</strong>.</p><p class="big-idea">INPUT &rarr; PROGRAM &rarr; OUTPUT</p><p>Changing the program changes what the same piano key can do.</p></div></div>
@@ -147,6 +145,44 @@ radio send "UMBRELLA"</pre></div>
     showDrop.addEventListener("dragover", event => { event.preventDefault(); showDrop.classList.add("over"); });
     showDrop.addEventListener("dragleave", () => showDrop.classList.remove("over"));
     showDrop.addEventListener("drop", event => { event.preventDefault(); showDrop.classList.remove("over"); const value = event.dataTransfer.getData("text/plain"); const result = document.getElementById("showResult"); if (value === "GHOST") { showDrop.textContent = "show GHOST"; showDrop.classList.add("fixed"); result.textContent = "Correct! The picture now matches the G key's message."; document.getElementById("sendStage").hidden = false; } else result.textContent = `Try again. The G key should show a GHOST, not ${value}.`; });
+    function enableTouchDragging(blocks, valueAttribute, target, onDrop) {
+      blocks.forEach(block => block.addEventListener("pointerdown", event => {
+        if (event.pointerType === "mouse") return;
+        event.preventDefault();
+        const value = block.dataset[valueAttribute];
+        const ghost = block.cloneNode(true);
+        ghost.classList.add("touch-drag-ghost");
+        ghost.style.width = `${block.getBoundingClientRect().width}px`;
+        document.body.appendChild(ghost);
+        let overTarget = false;
+        const move = moveEvent => {
+          ghost.style.left = `${moveEvent.clientX}px`;
+          ghost.style.top = `${moveEvent.clientY}px`;
+          const bounds = target.getBoundingClientRect();
+          overTarget = moveEvent.clientX >= bounds.left && moveEvent.clientX <= bounds.right && moveEvent.clientY >= bounds.top && moveEvent.clientY <= bounds.bottom;
+          target.classList.toggle("over", overTarget);
+        };
+        const end = () => {
+          document.removeEventListener("pointermove", move);
+          document.removeEventListener("pointerup", end);
+          document.removeEventListener("pointercancel", end);
+          ghost.remove();
+          target.classList.remove("over");
+          if (overTarget) onDrop(value);
+        };
+        ghost.style.left = `${event.clientX}px`;
+        ghost.style.top = `${event.clientY}px`;
+        document.body.appendChild(ghost);
+        document.addEventListener("pointermove", move, { passive: false });
+        document.addEventListener("pointerup", end, { once: true });
+        document.addEventListener("pointercancel", end, { once: true });
+      }));
+    }
+    enableTouchDragging(document.querySelectorAll("#showStage .drag-block"), "dragValue", showDrop, value => {
+      const result = document.getElementById("showResult");
+      if (value === "GHOST") { showDrop.textContent = "show GHOST"; showDrop.classList.add("fixed"); result.textContent = "Correct! The picture now matches the G key's message."; document.getElementById("sendStage").hidden = false; }
+      else result.textContent = `Try again. The G key should show a GHOST, not ${value}.`;
+    });
     document.querySelectorAll("[data-message]").forEach(button => button.addEventListener("click", () => { const value = button.dataset.message; document.querySelectorAll("[data-message]").forEach(option => option.classList.remove("selected")); button.classList.add("selected"); const result = document.getElementById("sendResult"); if (value === "GHOST") { result.textContent = "Correct! The other TechnoPiano will receive GHOST."; document.querySelectorAll("[data-message]").forEach(option => option.disabled = true); document.getElementById("successStage").hidden = false; document.getElementById("tryStage").hidden = false; celebrateSuccess(); } else result.textContent = "Not quite. The picture being shown is GHOST, so send GHOST."; }));
     const incorrectBlock = document.getElementById("incorrectBlock");
     const replacementWrap = document.getElementById("replacementWrap");
@@ -156,6 +192,7 @@ radio send "UMBRELLA"</pre></div>
     incorrectBlock.addEventListener("dragover", event => { if (incorrectBlock.classList.contains("selected")) { event.preventDefault(); incorrectBlock.classList.add("over"); } });
     incorrectBlock.addEventListener("dragleave", () => incorrectBlock.classList.remove("over"));
     incorrectBlock.addEventListener("drop", event => { event.preventDefault(); incorrectBlock.classList.remove("over"); const value = event.dataTransfer.getData("text/plain"); const result = document.getElementById("tryResult"); if (value === "UMBRELLA") { incorrectBlock.textContent = 'radio send "UMBRELLA"'; incorrectBlock.classList.add("fixed"); result.textContent = "SUCCESS! You found the bug and fixed the A-key message."; celebrateSuccess(); } else result.textContent = "That message does not match the A key's intended output. Try radio send \"UMBRELLA\"."; });
+    enableTouchDragging(replacementWrap.querySelectorAll("[data-replacement-value]"), "replacementValue", incorrectBlock, value => { const result = document.getElementById("tryResult"); if (value === "UMBRELLA") { incorrectBlock.textContent = 'radio send "UMBRELLA"'; incorrectBlock.classList.add("fixed"); result.textContent = "SUCCESS! You found the bug and fixed the A-key message."; celebrateSuccess(); } else result.textContent = "That message does not match the A key's intended output. Try radio send \"UMBRELLA\"."; });
   </script>
 </body>
 </html>
