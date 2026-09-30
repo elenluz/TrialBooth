@@ -3,1185 +3,152 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TechnoPiano</title>
-
+  <title>Piano Messenger | TechnoPiano</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      background:
-        radial-gradient(circle at 85% 12%, rgba(201, 155, 82, 0.16), transparent 30%),
-        linear-gradient(135deg, #1a1410 0%, #0e0d0c 58%, #17110e 100%);
-      color: #f7f0df;
-    }
-
-    button,
-    input,
-    textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .container {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 32px 0 64px;
-    }
-
-    .hero {
-      margin-bottom: 26px;
-      max-width: 100%;
-    }
-
-    .eyebrow {
-      color: #d6a653;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-size: 12px;
-    }
-
-    h1 {
-      margin: 8px 0 12px;
-      font-size: clamp(36px, 7vw, 72px);
-      line-height: 0.95;
-      letter-spacing: 0;
-    }
-
-    .hero p {
-      width: 100%;
-      max-width: 100%;
-      margin: 0;
-      color: #c2b8a7;
-      font-size: 18px;
-      line-height: 1.6;
-      white-space: normal;
-      overflow-wrap: break-word;
-    }
-
-    .grid {
-      display: grid;
-      gap: 20px;
-    }
-
-    .card {
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      box-shadow: none;
-      overflow: visible;
-    }
-
-    .card-body {
-      padding: 22px 0;
-    }
-
-    .video-stage {
-      aspect-ratio: 16 / 9;
-      background:
-        linear-gradient(90deg, rgba(104, 66, 34, 0.42), transparent 18%, transparent 82%, rgba(104, 66, 34, 0.42)),
-        #090807;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid #4e3825;
-      border-radius: 8px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-    }
-
-    .video-stage video {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
-      object-fit: contain;
-      background: #090807;
-    }
-
-    .video-fallback {
-      display: inline-block;
-      margin-top: 10px;
-      color: #d6a653;
-      font-size: 14px;
-    }
-
-    .video-complete {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-top: 12px;
-      padding: 12px 14px;
-      border: 1px solid #4e3825;
-      background: rgba(65, 46, 28, 0.35);
-      color: #e4d9c7;
-      font-size: 14px;
-    }
-
-    .video-complete button {
-      flex: none;
-      border: 1px solid #d6a653;
-      border-radius: 5px;
-      padding: 9px 12px;
-      background: #a97832;
-      color: #fff7e7;
-      font-weight: 750;
-    }
-
-    .challenge-section[hidden] {
-      display: none;
-    }
-
-    @media (max-width: 560px) {
-      .video-stage {
-        aspect-ratio: 16 / 9;
-        height: auto;
-        min-height: 0;
-      }
-
-      .video-complete {
-        align-items: stretch;
-        flex-direction: column;
-      }
-    }
-
-    .piano-keys {
-      display: flex;
-      height: 62px;
-      margin: 0 0 22px;
-      padding: 0 3px 3px;
-      border: 1px solid #654723;
-      background: #6d4928;
-      box-shadow: inset 0 0 0 4px #26170e;
-    }
-
-    .piano-key {
-      position: relative;
-      flex: 1;
-      border: 1px solid #c5bca7;
-      border-top: 0;
-      background: linear-gradient(90deg, #eee8d9, #fffaf0 55%, #d8d0bd);
-    }
-
-    .piano-key.black::after {
-      content: "";
-      position: absolute;
-      z-index: 1;
-      top: -1px;
-      right: -11px;
-      width: 21px;
-      height: 36px;
-      border: 1px solid #080706;
-      border-radius: 0 0 4px 4px;
-      background: linear-gradient(90deg, #151311, #44372c 45%, #090807);
-      box-shadow: 0 3px 3px rgba(0, 0, 0, 0.35);
-    }
-
-    .piano-key:last-child::after {
-      display: none;
-    }
-
-    .play-button {
-      position: relative;
-      z-index: 10;
-      border: 0;
-      border-radius: 999px;
-      background: white;
-      color: #111;
-      padding: 15px 22px;
-      font-weight: 800;
-    }
-
-    .robot-scene {
-      position: absolute;
-      inset: 0;
-    }
-
-    .floor {
-      position: absolute;
-      left: 12%;
-      right: 12%;
-      bottom: 18%;
-      height: 5px;
-      background: #43495a;
-      border-radius: 999px;
-    }
-
-    .robot {
-      position: absolute;
-      left: 20%;
-      bottom: 19%;
-      width: 85px;
-      height: 120px;
-      border: 3px solid #c7cbd4;
-      border-radius: 20px;
-      background: #5c6271;
-      transition: transform 0.7s ease;
-    }
-
-    .robot-face {
-      width: 55px;
-      height: 34px;
-      margin: 16px auto 0;
-      background: #0d1016;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-evenly;
-    }
-
-    .eye {
-      width: 8px;
-      height: 8px;
-      background: white;
-      border-radius: 50%;
-    }
-
-    .robot-arm {
-      position: absolute;
-      right: -42px;
-      top: 44px;
-      width: 46px;
-      height: 9px;
-      background: #c1c5ce;
-      border-radius: 99px;
-      transform-origin: left center;
-      transition: transform 0.5s ease;
-    }
-
-    .target {
-      position: absolute;
-      right: 15%;
-      bottom: 20%;
-      width: 65px;
-      height: 65px;
-      border-radius: 12px;
-      background: #61697a;
-      border: 3px solid #dadde5;
-      transition: transform 0.6s ease;
-    }
-
-    .caption {
-      position: absolute;
-      left: 18px;
-      bottom: 18px;
-      right: 18px;
-      background: rgba(0, 0, 0, 0.72);
-      border-radius: 12px;
-      padding: 12px 14px;
-      font-size: 14px;
-    }
-
-    .status {
-      display: inline-block;
-      border: 1px solid #33394c;
-      border-radius: 999px;
-      padding: 7px 11px;
-      color: #c7ccda;
-      font-size: 13px;
-    }
-
-    .steps {
-      display: grid;
-      gap: 18px;
-      margin-top: 18px;
-    }
-
-    .step {
-      display: flex;
-      gap: 14px;
-    }
-
-    .step-number {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      border: 1px solid #363c4f;
-      display: grid;
-      place-items: center;
-      flex: none;
-      font-weight: 800;
-    }
-
-    .muted {
-      color: #bdb2a1;
-      line-height: 1.5;
-    }
-
-    .challenge-section {
-      margin-top: 20px;
-      border-top: 1px solid #4e3825;
-    }
-
-    .challenge-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 22px;
-    }
-
-    .challenge-header h2 {
-      margin: 4px 0 8px;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .tab {
-      border: 1px solid #684b2b;
-      background: transparent;
-      color: #f4ead8;
-      border-radius: 5px;
-      padding: 10px 14px;
-    }
-
-    .tab.active {
-      background: #a97832;
-      border-color: #d6a653;
-    }
-
-    .challenge-grid {
-      display: grid;
-      gap: 20px;
-    }
-
-    .challenge-row {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 20px;
-      align-items: start;
-    }
-
-    .reference-row {
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-
-    .challenge-row.practice-row {
-      align-items: start;
-    }
-
-    textarea {
-      width: 100%;
-      min-height: 270px;
-      resize: vertical;
-      border: 1px solid #604524;
-      border-radius: 5px;
-      background: #100d0b;
-      color: #f4ead8;
-      padding: 18px;
-      outline: none;
-      font-family: "SFMono-Regular", Consolas, monospace;
-      line-height: 1.6;
-      font-size: 15px;
-      box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.22);
-    }
-
-    .block-workspace {
-      display: grid;
-      gap: 6px;
-      min-height: 190px;
-      padding: 14px;
-      border: 1px solid #604524;
-      border-radius: 5px;
-      background: #100d0b;
-      box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.22);
-    }
-
-    .makecode-block {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      width: fit-content;
-      max-width: 100%;
-      padding: 6px 8px;
-      border: 1px solid #4b7894;
-      border-radius: 5px;
-      background: #24506a;
-      color: #eef8fb;
-      font: 700 12px/1.25 "Trebuchet MS", sans-serif;
-    }
-
-    .makecode-block.event {
-      background: #315f8a;
-      border-color: #79b4d9;
-    }
-
-    .makecode-block.guard {
-      background: #7d4d5d;
-      border-color: #d28b9d;
-    }
-
-    .makecode-block select {
-      width: 100%;
-      min-width: 180px;
-      padding: 3px 6px;
-      border: 0;
-      border-radius: 3px;
-      background: transparent;
-      color: inherit;
-      font: 600 12px/1.2 "Trebuchet MS", sans-serif;
-    }
-
-    .makecode-block.select-block {
-      width: 100%;
-      padding: 0;
-    }
-
-    .makecode-block.select-block select {
-      display: block;
-      min-height: 36px;
-      cursor: pointer;
-      padding: 8px 10px;
-    }
-
-    .makecode-block select option {
-      background: #24506a;
-      color: #eef8fb;
-    }
-
-    .instructions {
-      margin: 0 0 22px;
-      padding: 18px;
-      border-left: 3px solid #d6a653;
-      background: rgba(65, 46, 28, 0.35);
-    }
-
-    .instructions p {
-      margin: 0 0 10px;
-      color: #e4d9c7;
-      line-height: 1.5;
-    }
-
-    .instructions p:last-child {
-      margin-bottom: 0;
-    }
-
-    .sample-output {
-      margin-top: 22px;
-      padding: 18px;
-      border: 1px solid #38566a;
-      border-radius: 5px;
-      background: #111d25;
-    }
-
-    .sample-output h3 {
-      margin: 0 0 12px;
-      color: #d9edf2;
-      font: 700 14px/1.2 "Trebuchet MS", sans-serif;
-    }
-
-    .sample-hint {
-      grid-column: 1 / -1;
-      margin: 0;
-      color: #a7c4cb;
-      font-size: 13px;
-    }
-
-    .sample-device {
-      display: grid;
-      grid-template-columns: 1fr;
-      align-items: center;
-      gap: 12px;
-      padding: 14px;
-      border: 1px solid #2f4b57;
-      border-radius: 5px;
-      background: #0c171d;
-    }
-
-    .sample-controls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-    }
-
-    .sample-piano {
-      display: flex;
-      flex-wrap: wrap;
-      width: min(100%, 360px);
-      justify-self: end;
-      height: 96px;
-      padding: 0 3px 3px;
-      border: 3px solid #714b2a;
-      border-radius: 4px;
-      background: #2a1a11;
-    }
-
-    .sample-piano-key {
-      position: relative;
-      flex: 1;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding-bottom: 8px;
-      border: 1px solid #bcb29e;
-      border-top: 0;
-      background: #f5efdf;
-      color: #5b4025;
-      font: 700 11px/1 "Trebuchet MS", sans-serif;
-      cursor: pointer;
-      appearance: none;
-      -webkit-appearance: none;
-    }
-
-    .sample-piano-key.active {
-      background: #e8b95c;
-      box-shadow: inset 0 -7px 0 #b77b31;
-    }
-
-    .sample-piano-key:focus-visible {
-      outline: 2px solid #e8b95c;
-      outline-offset: 2px;
-    }
-
-    .sample-piano-key::after {
-      content: "";
-      position: absolute;
-      z-index: 1;
-      top: 0;
-      right: -7px;
-      width: 13px;
-      height: 53px;
-      border-radius: 0 0 3px 3px;
-      background: #171311;
-    }
-
-    .sample-piano-key:nth-child(3)::after,
-    .sample-piano-key:last-child::after {
-      display: none;
-    }
-
-    .led-matrix {
-      display: grid;
-      grid-template-columns: repeat(5, 7px);
-      gap: 6px;
-      padding: 16px;
-      border: 3px solid #29353a;
-      border-radius: 5px;
-      background: #080c0e;
-      box-shadow: 0 0 18px rgba(232, 185, 92, 0.16);
-    }
-
-    .led {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #253238;
-    }
-
-    .led.on {
-      background: #e8b95c;
-      box-shadow: 0 0 7px #e8b95c;
-    }
-
-    .output-line {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 7px 0;
-      border-bottom: 1px solid rgba(156, 198, 211, 0.14);
-      color: #a7c4cb;
-      font: 13px/1.4 "SFMono-Regular", Consolas, monospace;
-    }
-
-    .output-line:last-child {
-      border-bottom: 0;
-    }
-
-    .output-value {
-      color: #f1c66c;
-      text-align: right;
-    }
-
-    .makecode-block select:focus {
-      outline: 0;
-    }
-
-    textarea:focus,
-    input:focus {
-      border-color: #d6a653;
-      box-shadow: 0 0 0 3px rgba(214, 166, 83, 0.16);
-    }
-
-    .actions {
-      margin-top: 12px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .primary,
-    .secondary {
-      border-radius: 11px;
-      padding: 11px 16px;
-      border: 0;
-      font-weight: 750;
-    }
-
-    .primary {
-      background: #b27b31;
-      color: #fff7e7;
-    }
-
-    .secondary {
-      background: transparent;
-      color: #f4ead8;
-      border: 1px solid #684b2b;
-    }
-
-    .result {
-      margin-top: 14px;
-      color: #aeb5c4;
-      min-height: 24px;
-    }
-
-    .celebration {
-      position: fixed;
-      inset: 0;
-      z-index: 20;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .celebration-message {
-      position: absolute;
-      top: 18%;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 12px 18px;
-      border: 1px solid #d6a653;
-      border-radius: 5px;
-      background: #20170f;
-      color: #fff7e7;
-      font-weight: 800;
-      animation: celebration-pop 0.45s ease-out both;
-    }
-
-    .confetti-piece {
-      position: absolute;
-      top: -16px;
-      width: 9px;
-      height: 16px;
-      background: var(--confetti-color);
-      transform: translateX(0) rotate(0);
-      animation: confetti-fall 1.8s ease-in forwards;
-    }
-
-    @keyframes confetti-fall {
-      to {
-        transform: translate3d(var(--confetti-drift), 110vh, 0) rotate(720deg);
-      }
-    }
-
-    @keyframes celebration-pop {
-      from { opacity: 0; transform: translateX(-50%) scale(0.8); }
-      to { opacity: 1; transform: translateX(-50%) scale(1); }
-    }
-
-    .test-stage {
-      height: 210px;
-      background: #080a0f;
-      border-radius: 14px;
-      position: relative;
-      overflow: hidden;
-      margin-top: 16px;
-    }
-
-    .test-line {
-      position: absolute;
-      left: 7%;
-      right: 7%;
-      bottom: 42px;
-      height: 4px;
-      border-radius: 99px;
-      background: #3d4352;
-    }
-
-    .mini-robot {
-      position: absolute;
-      left: 8%;
-      bottom: 45px;
-      width: 50px;
-      height: 70px;
-      background: #545b69;
-      border: 2px solid #d4d7de;
-      border-radius: 11px;
-      transition: left 0.8s ease;
-    }
-
-    .mini-robot::before {
-      content: "";
-      position: absolute;
-      width: 28px;
-      height: 13px;
-      background: #10131a;
-      border-radius: 5px;
-      top: 10px;
-      left: 9px;
-    }
-
-    .mini-target {
-      position: absolute;
-      right: 9%;
-      bottom: 45px;
-      width: 58px;
-      height: 58px;
-      border: 2px solid white;
-      background: #525968;
-      border-radius: 10px;
-    }
-
-    .stats {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 16px;
-      gap: 12px;
-    }
-
-    .score {
-      font-size: 24px;
-      font-weight: 800;
-    }
-
-    .score-panel {
-      height: 190px;
-      padding: 18px;
-      border-left: 3px solid #d6a653;
-      background: rgba(65, 46, 28, 0.35);
-    }
-
-    .score-panel h3 {
-      margin: 0 0 8px;
-      color: #f4ead8;
-    }
-
-    .score-panel p {
-      margin: 0 0 20px;
-      color: #bdb2a1;
-      line-height: 1.5;
-    }
-
-    .score-message {
-      margin: 18px 0 0;
-      padding-top: 14px;
-      border-top: 1px solid rgba(214, 166, 83, 0.28);
-      color: #e8b95c;
-      line-height: 1.5;
-    }
-
-    .score-message:empty {
-      display: none;
-    }
-
-    button:disabled,
-    select:disabled {
-      cursor: not-allowed;
-      opacity: 0.58;
-    }
-
-    .bottom-grid {
-      display: grid;
-      grid-template-columns: 0.7fr 1.3fr;
-      gap: 20px;
-      margin-top: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid #34394a;
-      background: #0c0f15;
-      color: white;
-      outline: none;
-      margin: 8px 0 12px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th,
-    td {
-      padding: 13px 8px;
-      border-bottom: 1px solid #282e3e;
-      text-align: left;
-    }
-
-    th {
-      color: #8f97a9;
-      font-size: 13px;
-    }
-
-    td:last-child,
-    th:last-child {
-      text-align: right;
-    }
-
-    @media (max-width: 820px) {
-      .grid,
-      .challenge-row,
-      .bottom-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .challenge-header {
-        flex-direction: column;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .sample-device {
-        grid-template-columns: 1fr;
-      }
-
-      .sample-controls {
-        flex-wrap: wrap;
-      }
-
-      .sample-piano {
-        height: 82px;
-        justify-self: center;
-      }
-
-      .led-matrix {
-        justify-self: center;
-      }
-    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Georgia, "Times New Roman", serif; color: #f7f0df; background: radial-gradient(circle at 85% 10%, rgba(201,155,82,.16), transparent 30%), linear-gradient(135deg, #1a1410, #0e0d0c 58%, #17110e); }
+    button, select { font: inherit; }
+    button { cursor: pointer; }
+    .container { width: min(1180px, calc(100% - 32px)); margin: auto; padding: 34px 0 70px; }
+    .eyebrow { color: #d6a653; font-size: 12px; font-weight: 700; letter-spacing: .12em; }
+    .hero { margin-bottom: 26px; }
+    h1 { margin: 8px 0 14px; font-size: clamp(40px, 8vw, 76px); line-height: .95; }
+    h2 { margin: 8px 0 12px; }
+    .hero p, .challenge-lead { max-width: 760px; margin: 6px 0; color: #c2b8a7; font-size: 18px; line-height: 1.55; }
+    .video-stage { aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid #4e3825; border-radius: 8px; background: #090807; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+    video, .video-embed { width: 100%; height: 100%; display: block; border: 0; }
+    .video-fallback { display: inline-block; margin-top: 10px; color: #d6a653; font-size: 14px; }
+    .video-complete { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 12px; padding: 12px 14px; border: 1px solid #4e3825; background: rgba(65,46,28,.35); color: #e4d9c7; }
+    .video-complete button { border: 1px solid #d6a653; border-radius: 5px; padding: 10px 14px; background: #a97832; color: #fff7e7; font-weight: 700; }
+    .piano-keys { display: flex; height: 62px; margin-top: 22px; padding: 0 3px 3px; border: 1px solid #654723; background: #6d4928; box-shadow: inset 0 0 0 4px #26170e; }
+    .piano-key { flex: 1; border: 1px solid #c5bca7; border-top: 0; background: linear-gradient(90deg, #eee8d9, #fffaf0 55%, #d8d0bd); }
+    .about-section, .challenge-section { margin-top: 28px; border-top: 1px solid #4e3825; }
+    .about-section summary { padding: 18px 0; color: #d6a653; cursor: pointer; font-weight: 700; letter-spacing: .1em; }
+    .about-section summary span { display: inline-block; margin-left: 8px; transition: transform .2s; }
+    .about-section:not([open]) summary span { transform: rotate(-90deg); }
+    .about-content { max-width: 800px; padding-bottom: 24px; color: #c2b8a7; line-height: 1.6; }
+    .about-content h2, .about-content h3, .about-content h4 { color: #f4ead8; }
+    .about-content h3 { margin-top: 26px; }
+    .about-content h4 { margin: 18px 0 4px; }
+    .about-content p { margin: 6px 0; }
+    .io-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+    .io-grid div { padding: 14px; border: 1px solid #604524; background: rgba(65,46,28,.35); }
+    .io-grid strong, .io-grid span { display: block; }
+    .io-grid strong { margin-bottom: 6px; color: #e8b95c; }
+    .card-body { padding: 24px 0; }
+    .muted { color: #bdb2a1; line-height: 1.5; }
+    .instructions { margin: 18px 0; padding: 18px; border-left: 3px solid #d6a653; background: rgba(65,46,28,.35); }
+    .instructions p { margin: 0 0 10px; line-height: 1.5; }
+    .instructions p:last-child { margin-bottom: 0; }
+    .program-line { color: #e8b95c; font-weight: 700; }
+    pre { margin: 12px 0 0; padding: 16px; overflow-x: auto; border: 1px solid #604524; background: #100d0b; color: #f4ead8; font: 15px/1.55 "SFMono-Regular", Consolas, monospace; }
+    .messenger-stage { padding: 22px 0; border-top: 1px solid rgba(214,166,83,.24); }
+    .expected-output { display: grid; grid-template-columns: minmax(220px, .8fr) minmax(280px, 1.2fr); gap: 18px; align-items: center; margin: 18px 0 24px; padding: 18px; border: 1px solid #38566a; background: #111d25; }
+    .expected-output h3 { margin: 0 0 8px; color: #d9edf2; font: 700 14px/1.2 "Trebuchet MS", sans-serif; letter-spacing: .06em; }
+    .expected-output p { margin: 5px 0; color: #a7c4cb; line-height: 1.45; }
+    .output-preview { display: flex; align-items: center; gap: 16px; }
+    .led-matrix { display: grid; grid-template-columns: repeat(5, 9px); gap: 5px; padding: 12px; border: 3px solid #29353a; border-radius: 5px; background: #080c0e; box-shadow: 0 0 18px rgba(232,185,92,.16); }
+    .led { width: 9px; height: 9px; border-radius: 50%; background: #253238; }
+    .led.on { background: #e8b95c; box-shadow: 0 0 7px #e8b95c; }
+    .makecode-stack { display: grid; gap: 5px; }
+    .makecode-block { position: relative; width: fit-content; max-width: 100%; padding: 9px 14px 9px 18px; border: 1px solid #79b4d9; border-radius: 4px; color: #eef8fb; font: 700 13px/1.2 "Trebuchet MS", sans-serif; box-shadow: inset 0 2px rgba(255,255,255,.12); }
+    .makecode-block::before { content: ""; position: absolute; top: -5px; left: 12px; width: 18px; height: 5px; border-radius: 3px 3px 0 0; background: inherit; }
+    .makecode-block.event { background: #315f8a; }
+    .makecode-block.sound { background: #7d4d5d; border-color: #d28b9d; }
+    .makecode-block.display { background: #24506a; }
+    .makecode-block.radio { background: #3d7a64; border-color: #9ad6ad; }
+    .makecode-block.question { background: #5a536f; border-color: #b9afd9; color: #fff; }
+    .makecode-choice { position: relative; width: min(100%, 430px); margin: 10px 0; padding: 9px 12px 9px 18px; border: 1px solid #79b4d9; border-radius: 4px; background: #24506a; box-shadow: inset 0 2px rgba(255,255,255,.12); }
+    .makecode-choice::before { content: ""; position: absolute; top: -5px; left: 12px; width: 18px; height: 5px; border-radius: 3px 3px 0 0; background: inherit; }
+    .makecode-choice.radio-choice { background: #3d7a64; border-color: #9ad6ad; }
+    .makecode-choice select { width: 100%; margin: 0; padding: 2px 4px; border: 0; background: transparent; color: #eef8fb; font: 700 13px/1.2 "Trebuchet MS", sans-serif; }
+    .selectable-block { cursor: pointer; }
+    .selectable-block.selected { outline: 3px solid #e8b95c; outline-offset: 3px; }
+    .replacement-options { display: none; margin-top: 16px; }
+    .replacement-options.visible { display: block; }
+    .drag-options, .message-options { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+    .drag-block, .message-options button { position: relative; padding: 12px 14px 12px 18px; border: 1px solid #79b4d9; border-radius: 4px; background: #24506a; color: #eef8fb; font-weight: 700; box-shadow: inset 0 2px rgba(255,255,255,.12); }
+    .drag-block::before { content: ""; position: absolute; top: -5px; left: 12px; width: 18px; height: 5px; border-radius: 3px 3px 0 0; background: inherit; }
+    .drop-program, .broken-block { display: inline-block; min-width: 250px; padding: 15px 18px; border: 2px dashed #d6a653; background: #20170f; color: #f4ead8; font: 700 15px/1.3 "SFMono-Regular", Consolas, monospace; }
+    .drop-program { position: relative; padding-left: 28px; }
+    .drop-program::before { content: ""; position: absolute; top: -6px; left: 12px; width: 18px; height: 6px; border-radius: 3px 3px 0 0; background: #d6a653; }
+    .drop-program.over { background: #684b2b; }
+    .drop-program.fixed { border-style: solid; border-color: #b7f3ce; color: #b7f3ce; }
+    .makecode-block.over { background: #684b2b; }
+    .makecode-block.fixed { border-color: #b7f3ce; color: #b7f3ce; }
+    .message-options button.selected { border-color: #e8b95c; background: #a97832; }
+    .result { min-height: 24px; margin-top: 14px; color: #e8b95c; line-height: 1.5; }
+    .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; color: #e8b95c; font-weight: 700; line-height: 1.5; }
+    .flow span { color: #f4ead8; }
+    .big-idea { color: #e8b95c; font-size: 20px; font-weight: 800; }
+    .try-one-more label, .try-one-more select { display: block; }
+    .try-one-more label { margin-top: 16px; color: #e4d9c7; font-weight: 700; }
+    .try-one-more select { width: min(100%, 430px); margin: 8px 0 14px; padding: 11px; border: 1px solid #604524; border-radius: 5px; background: #100d0b; color: #f4ead8; }
+    .celebration { position: fixed; inset: 0; z-index: 20; pointer-events: none; overflow: hidden; }
+    .celebration-message { position: absolute; top: 18%; left: 50%; padding: 12px 18px; transform: translateX(-50%); border: 1px solid #d6a653; background: #20170f; color: #fff7e7; font-weight: 800; }
+    .confetti-piece { position: absolute; top: -16px; width: 9px; height: 16px; background: var(--confetti-color); animation: fall 1.8s ease-in forwards; }
+    @keyframes fall { to { transform: translate3d(var(--confetti-drift), 110vh, 0) rotate(720deg); } }
+    @media (max-width: 680px) { .io-grid { grid-template-columns: 1fr; } .video-complete { align-items: stretch; flex-direction: column; } }
+    @media (max-width: 620px) { .expected-output { grid-template-columns: 1fr; } }
   </style>
 </head>
-
 <body>
   <main class="container">
-    <div class="celebration" id="celebration" aria-live="polite" aria-atomic="true"></div>
+    <div class="celebration" id="celebration" aria-live="polite"></div>
     <section class="hero">
       <div class="eyebrow">TechnoKids PH</div>
-      <h1>TechnoPiano</h1>
-      <p>
-        A piano-style hardware board powered by a BBC micro:bit for music, sensing, programming, and hardware control.
-      </p>
+      <h1>PIANO MESSENGER</h1>
+      <p>What if a piano key could send more than just a sound?</p>
+      <p>Watch how the TechnoPiano turns musical keys into picture messages.</p>
     </section>
-
-    <section class="grid">
-      <article class="card">
-        <div class="video-stage">
-          <video id="lessonVideo" controls playsinline preload="metadata" title="Guess the Note video">
-            <source src="lesson-video.mp4" type="video/mp4" />
-            Your browser cannot play this video. Use the link below to open it directly.
-          </video>
-        </div>
-        <a class="video-fallback" href="https://drive.google.com/file/d/1kdzDIsYXj4_cHr_GTQLPrgl0Zx0pj-8b/view" target="_blank" rel="noopener">Open video in a new tab</a>
-          <h3>Meet the programmable interactive robot</h3>
-          <p class="muted">
-            The piano board has touch-style keys labeled C, D, E, F, G, A, and
-            B, plus RGB lighting, a buzzer, external connection ports,
-            switch-board sockets, and interfaces for additional modules. It
-            supports interactive projects involving sound, lights, and user
-            controls.
-            <br /><br />
-            The BBC micro:bit provides a 5x5 LED matrix, two buttons, a
-            microphone, touch logo, light sensing, accelerometer, and
-            magnetometer. Bluetooth, radio, USB, GPIO, analogue-digital pins,
-            an edge connector, and external power support make it easy to
-            connect computers, sensors, and other electronic components.
-          </p>
-        </div>
-        <div class="video-complete" id="videoComplete">
-          <span>Watch the video to unlock the technical activity.</span>
-          <button id="unlockActivity" type="button">Ready for challenge</button>
-        </div>
-        <div class="piano-keys" aria-hidden="true">
-          <span class="piano-key black"></span>
-          <span class="piano-key black"></span>
-          <span class="piano-key"></span>
-          <span class="piano-key black"></span>
-          <span class="piano-key black"></span>
-          <span class="piano-key black"></span>
-          <span class="piano-key"></span>
-        </div>
-      </article>
-    </section>
-
-    <section class="card challenge-section" id="challengeSection" hidden>
-      <div class="card-body">
-        <div class="challenge-header">
-          <div>
-            <div class="eyebrow">Technical challenge</div>
-            <h2 id="challengeTitle">Build the note display loop</h2>
-            <div class="muted" id="challengeText">
-              Recreate the part of the sample that reads a touch key and shows its note on the micro:bit LED matrix.
-            </div>
-          </div>
-        </div>
-
-        <div class="challenge-grid">
-          <div class="challenge-row reference-row">
-            <div class="instructions">
-              <p><strong>Your task:</strong> complete the note-display loop in the order used by the sample.</p>
-              <p>This focuses on one of the sample's note-display loops: read <code>piano.Touch()</code>, check a key, then show that note's LED pattern.</p>
-            </div>
-
-            <div>
-              <strong>Expected sample output</strong>
-              <div class="sample-output">
-                <h3 id="sampleTitle">When piano key C is touched</h3>
-                <div class="sample-device" aria-label="Interactive sample output">
-                  <p class="sample-hint">Try pressing the piano keys to see each note's LED pattern.</p>
-                  <div class="sample-controls">
-                    <div class="sample-piano">
-                      <button class="sample-piano-key active" data-sample-note="C" type="button">C</button>
-                      <button class="sample-piano-key" data-sample-note="D" type="button">D</button>
-                      <button class="sample-piano-key" data-sample-note="E" type="button">E</button>
-                      <button class="sample-piano-key" data-sample-note="F" type="button">F</button>
-                      <button class="sample-piano-key" data-sample-note="G" type="button">G</button>
-                      <button class="sample-piano-key" data-sample-note="A" type="button">A</button>
-                      <button class="sample-piano-key" data-sample-note="B" type="button">B</button>
-                    </div>
-                    <div class="led-matrix" id="sampleMatrix" aria-label="LED matrix showing C">
-                    <span class="led"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led"></span>
-                    <span class="led on"></span><span class="led"></span><span class="led"></span><span class="led"></span><span class="led"></span>
-                    <span class="led on"></span><span class="led"></span><span class="led"></span><span class="led"></span><span class="led"></span>
-                    <span class="led on"></span><span class="led"></span><span class="led"></span><span class="led"></span><span class="led"></span>
-                    <span class="led"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="challenge-row practice-row">
-            <div>
-            <div class="block-workspace" id="blockWorkspace" aria-label="MakeCode block workspace">
-              <div class="makecode-block select-block">
-                <select data-block="note" aria-label="Choose note action">
-                  <option value="wrong">Choose a block...</option>
-                  <option value="read">item = piano.Touch()</option>
-                  <option value="check">if item == piano.TouchButton(piano.touch.C)</option>
-                  <option value="show">basic.showLeds(C pattern)</option>
-                  <option value="distractor">change the piano volume</option>
-                </select>
-              </div>
-              <div class="makecode-block select-block">
-                <select data-block="sound" aria-label="Choose sound action">
-                  <option value="wrong">Choose a block...</option>
-                  <option value="read">item = piano.Touch()</option>
-                  <option value="check">if item == piano.TouchButton(piano.touch.C)</option>
-                  <option value="show">basic.showLeds(C pattern)</option>
-                  <option value="distractor">change the piano volume</option>
-                </select>
-              </div>
-              <div class="makecode-block select-block">
-                <select data-block="display" aria-label="Choose display action">
-                  <option value="wrong">Choose a block...</option>
-                  <option value="read">item = piano.Touch()</option>
-                  <option value="check">if item == piano.TouchButton(piano.touch.C)</option>
-                  <option value="show">basic.showLeds(C pattern)</option>
-                  <option value="distractor">change the piano volume</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="actions">
-              <button class="primary" id="runCode">Run Code</button>
-              <button class="secondary" id="resetCode">Reset</button>
-            </div>
-
-            <div class="result" id="result">
-              Choose the three code blocks, then run the program.
-            </div>
-            </div>
-
-            <div class="score-panel">
-              <h3>Your progress</h3>
-              <p>Complete the sequence correctly to earn your best score.</p>
-              <div class="stats">
-                <div>
-                  <div class="muted">Attempts</div>
-                  <div class="score" id="attempts">0</div>
-                </div>
-
-                <div>
-                  <div class="muted">Best score</div>
-                  <div class="score" id="bestScore">0</div>
-                </div>
-              </div>
-              <p class="score-message" id="scoreMessage"></p>
-            </div>
-          </div>
-        </div>
+    <article>
+      <div class="video-stage"><iframe class="video-embed" src="https://drive.google.com/file/d/1Q4UexAJOkOYk0YL1V4biaznzTnnXjRNs/preview" title="Piano Messenger video" allow="autoplay"></iframe></div>
+      <a class="video-fallback" href="https://drive.google.com/file/d/1Q4UexAJOkOYk0YL1V4biaznzTnnXjRNs/view?usp=drive_link" target="_blank" rel="noopener">Open video in a new tab</a>
+      <div class="video-complete" id="videoComplete"><span>When you are ready, start the activity.</span><button id="unlockActivity" type="button">Ready for Activity</button></div>
+      <div class="piano-keys" aria-hidden="true"><span class="piano-key"></span><span class="piano-key"></span><span class="piano-key"></span><span class="piano-key"></span><span class="piano-key"></span><span class="piano-key"></span><span class="piano-key"></span></div>
+    </article>
+    <details class="about-section">
+      <summary>ABOUT THE TECHNOPIANO <span aria-hidden="true">▼</span></summary>
+      <div class="about-content">
+        <h2>ABOUT THE TECHNOPIANO</h2><p>TechnoPiano is a programmable piano-style hardware board powered by the BBC micro.</p><p>It combines music, programming, sensors, lights, and hardware control in one device.</p>
+        <h3>WHAT'S ON THE TECHNOPIANO?</h3><h4>PIANO KEYS</h4><p>Touch-style keys labeled C, D, E, F, G, A, and B can be used as inputs for programs.</p><p>A key can trigger lights, pictures, messages, or other actions.</p>
+        <h4>SOUND AND LIGHT</h4><p>The board includes a buzzer for sound and RGB lighting controlled through programs.</p><h4>BBC MICRO</h4><p>The micro acts as the programmable controller. It includes:</p>
+        <ul><li>5x5 LED matrix</li><li>Two programmable buttons</li><li>Microphone</li><li>Touch-sensitive logo</li><li>Light sensing</li><li>Accelerometer for detecting movement</li><li>Magnetometer for detecting direction</li></ul>
+        <h4>WIRELESS COMMUNICATION</h4><p>The micro supports radio and Bluetooth communication. Radio allows one TechnoPiano to send a programmed message to another wirelessly.</p><h4>CONNECTING MORE HARDWARE</h4><p>The TechnoPiano and micro provide connections for additional electronic components and modules.</p>
+        <div class="io-grid"><div><strong>INPUTS</strong><span>Keys &bull; Buttons &bull; Sensors</span></div><div><strong>PROGRAM</strong><span>Instructions created with programming blocks</span></div><div><strong>OUTPUTS</strong><span>Sound &bull; Lights &bull; LED pictures &bull; Wireless messages &bull; Connected devices</span></div></div>
       </div>
-    </section>
+    </details>
+    <section class="challenge-section" id="challengeSection" hidden><div class="card-body">
+      <div class="eyebrow">YOUR CHALLENGE: FIX THE PIANO MESSENGER</div><h2>Uh-oh! Someone changed the program.</h2><p class="challenge-lead">The G key is supposed to show and send a GHOST. But when G is pressed, the TechnoPiano shows an UMBRELLA instead.</p>
+      <div class="instructions"><p><strong>BROKEN PROGRAM</strong></p><p class="program-line">WHEN G KEY PRESSED</p><pre>play note G
 
+show UMBRELLA
+
+radio send "UMBRELLA"</pre></div>
+      <div class="messenger-stage" id="showStage"><div class="eyebrow">STEP 1: FIX THE PICTURE</div><div class="expected-output"><div><h3>EXPECTED OUTPUT WHEN G IS PRESSED</h3><p>The piano should play G and show a <strong>GHOST</strong> on the micro:bit screen.</p><div class="output-preview"><div class="led-matrix" aria-label="5 by 5 LED ghost picture"><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led"></span><span class="led on"></span><span class="led"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led on"></span><span class="led"></span><span class="led"></span><span class="led"></span><span class="led on"></span><span class="led on"></span><span class="led"></span><span class="led on"></span><span class="led"></span><span class="led on"></span></div><strong>GHOST</strong></div></div><div class="makecode-stack"><div class="makecode-block event">when G key pressed</div><div class="makecode-block sound">play note G</div><div class="makecode-block question drop-program" id="showDrop" tabindex="0" aria-label="Drop the replacement show block here">show ?</div></div></div><p class="muted">Use the ghost preview to choose the missing <strong>show</strong> block. Drag the matching block directly onto <strong>show ?</strong>.</p><div class="drag-options"><button class="drag-block" draggable="true" data-drag-value="HEART">show HEART</button><button class="drag-block" draggable="true" data-drag-value="HOUSE">show HOUSE</button><button class="drag-block" draggable="true" data-drag-value="GHOST">show GHOST</button><button class="drag-block" draggable="true" data-drag-value="UMBRELLA">show UMBRELLA</button></div><p class="result" id="showResult">Drag the correct block onto the show ? block above.</p></div>
+      <div class="messenger-stage" id="sendStage" hidden><div class="eyebrow">ALMOST THERE!</div><p class="challenge-lead">The picture on this TechnoPiano is fixed... but the other TechnoPiano still receives an umbrella!</p><div class="instructions"><p><strong>BROKEN BLOCK</strong></p><div class="makecode-stack"><div class="makecode-block radio">radio send "UMBRELLA"</div></div></div><p class="muted">Choose the correct message:</p><div class="message-options"><button data-message="HEART" type="button">radio send "HEART"</button><button data-message="HOUSE" type="button">radio send "HOUSE"</button><button data-message="GHOST" type="button">radio send "GHOST"</button><button data-message="UMBRELLA" type="button">radio send "UMBRELLA"</button></div><p class="result" id="sendResult">Choose the message that matches the picture.</p></div>
+      <div class="messenger-stage" id="successStage" hidden><div class="eyebrow">SUCCESS!</div><h2>You fixed Piano Messenger!</h2><p>Now when G is pressed:</p><div class="flow">G KEY <span>↓</span> PLAY NOTE G <span>↓</span> SHOW GHOST <span>↓</span> SEND "GHOST" <span>↓</span> OTHER TECHNOPIANO RECEIVES THE MESSAGE</div><div class="makecode-stack"><div class="makecode-block event">when G key pressed</div><div class="makecode-block sound">play note G</div><div class="makecode-block display">show GHOST</div><div class="makecode-block radio">radio send "GHOST"</div></div><div class="instructions"><p><strong>WHAT DID YOU JUST DO?</strong></p><p>You debugged a program.</p><p>The G key is an <strong>INPUT</strong>. The note, picture, and wireless message are <strong>OUTPUTS</strong>.</p><p class="big-idea">INPUT &rarr; PROGRAM &rarr; OUTPUT</p><p>Changing the program changes what the same piano key can do.</p></div></div>
+      <div class="messenger-stage try-one-more" id="tryStage" hidden><div class="eyebrow">TRY ONE MORE</div><p>The A key should play A and send an UMBRELLA. Select the incorrect block, then drag the correct block onto it.</p><div class="instructions"><p><strong>BROKEN MAKECODE PROGRAM</strong></p><div class="makecode-stack"><div class="makecode-block event">when A key pressed</div><div class="makecode-block sound">play note A</div><div class="makecode-block display">show UMBRELLA</div><div class="makecode-block radio selectable-block" id="incorrectBlock" tabindex="0" role="button" aria-label="Select incorrect radio message block" data-incorrect-value="radio">radio send "HEART"</div></div></div><p class="muted">Click the incorrect block.</p><div class="replacement-options" id="replacementWrap"><p class="muted">Now drag the correct replacement block onto the selected block:</p><div class="drag-options"><button class="drag-block" draggable="true" data-replacement-value="HEART">radio send "HEART"</button><button class="drag-block" draggable="true" data-replacement-value="HOUSE">radio send "HOUSE"</button><button class="drag-block" draggable="true" data-replacement-value="GHOST">radio send "GHOST"</button><button class="drag-block" draggable="true" data-replacement-value="UMBRELLA">radio send "UMBRELLA"</button></div></div><p class="result" id="tryResult">Choose the incorrect block in the program above.</p></div>
+    </div></section>
   </main>
-
   <script>
-    let attempts = 0;
-    let bestScore = 0;
-
-    const runCode = document.getElementById("runCode");
-    const resetCode = document.getElementById("resetCode");
-    const unlockActivity = document.getElementById("unlockActivity");
-    const challengeSection = document.getElementById("challengeSection");
-    const videoComplete = document.getElementById("videoComplete");
-    const result = document.getElementById("result");
-    const blockSelects = document.querySelectorAll("[data-block]");
-    const sampleTitle = document.getElementById("sampleTitle");
-    const sampleMatrix = document.getElementById("sampleMatrix");
-    const sampleKeys = document.querySelectorAll("[data-sample-note]");
     const celebration = document.getElementById("celebration");
-    const scoreMessage = document.getElementById("scoreMessage");
-    const notePatterns = {
-      C: ["01110", "10000", "10000", "10000", "01110"],
-      D: ["11110", "10001", "10001", "10001", "11110"],
-      E: ["11111", "10000", "11110", "10000", "11111"],
-      F: ["11111", "10000", "11110", "10000", "10000"],
-      G: ["01110", "10000", "10111", "10001", "01110"],
-      A: ["01110", "10001", "11111", "10001", "10001"],
-      B: ["11110", "10001", "11110", "10001", "11110"]
-    };
-
-    unlockActivity.addEventListener("click", () => {
-      challengeSection.hidden = false;
-      videoComplete.querySelector("span").textContent = "Video watched. The technical activity is unlocked.";
-      unlockActivity.textContent = "Activity unlocked";
-      unlockActivity.disabled = true;
-      challengeSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      challengeSection.querySelector("select").focus({ preventScroll: true });
-    });
-
-    function shuffleOptions(select) {
-      const placeholder = select.querySelector('option[value="wrong"]');
-      const options = Array.from(select.options).filter(option => option !== placeholder);
-
-      for (let index = options.length - 1; index > 0; index--) {
-        const randomIndex = Math.floor(Math.random() * (index + 1));
-        [options[index], options[randomIndex]] = [options[randomIndex], options[index]];
-      }
-
-      select.replaceChildren(placeholder, ...options);
-      select.value = "wrong";
-    }
-
-    function shuffleAllOptions() {
-      blockSelects.forEach(shuffleOptions);
-    }
-
-    function showSampleNote(note) {
-      sampleKeys.forEach(key => {
-        key.classList.toggle("active", key.dataset.sampleNote === note);
-      });
-
-      sampleMatrix.setAttribute("aria-label", `LED matrix showing ${note}`);
-      sampleTitle.textContent = `When piano key ${note} is touched`;
-      sampleMatrix.querySelectorAll(".led").forEach((led, index) => {
-        const row = Math.floor(index / 5);
-        const column = index % 5;
-        led.classList.toggle("on", notePatterns[note][row][column] === "1");
-      });
-    }
-
-    function celebrateSuccess() {
-      celebration.replaceChildren();
-      const message = document.createElement("div");
-      message.className = "celebration-message";
-      message.textContent = "Challenge complete!";
-      celebration.appendChild(message);
-
-      const colors = ["#e8b95c", "#79b4d9", "#d28b9d", "#b7f3ce", "#fff7e7"];
-      for (let index = 0; index < 40; index++) {
-        const piece = document.createElement("span");
-        piece.className = "confetti-piece";
-        piece.style.left = `${Math.random() * 100}%`;
-        piece.style.setProperty("--confetti-color", colors[index % colors.length]);
-        piece.style.setProperty("--confetti-drift", `${Math.random() * 180 - 90}px`);
-        piece.style.animationDelay = `${Math.random() * 0.25}s`;
-        celebration.appendChild(piece);
-      }
-
-      setTimeout(() => celebration.replaceChildren(), 2200);
-    }
-
-    function getScoreMessage(score) {
-      if (score === 1000) {
-        return "Perfect first try! You followed the piano activity exactly.";
-      }
-      if (score >= 800) {
-        return "Great work! You solved the activity with only a few attempts.";
-      }
-      if (score >= 600) {
-        return "Nice persistence! Review the order once more and try to improve your score.";
-      }
-      return "Challenge complete. Reset and practice the sequence to improve your score.";
-    }
-
-    sampleKeys.forEach(key => {
-      key.addEventListener("click", () => {
-        showSampleNote(key.dataset.sampleNote);
-      });
-    });
-
-    runCode.addEventListener("click", () => {
-      attempts++;
-      document.getElementById("attempts").textContent = attempts;
-
-      const blocks = Array.from(blockSelects, select => select.value);
-      const expectedBlocks = ["read", "check", "show"];
-      const correctSequence = blocks.every((block, index) => block === expectedBlocks[index]);
-
-      if (correctSequence) {
-        bestScore = Math.max(1000 - (attempts - 1) * 100, 500);
-        document.getElementById("bestScore").textContent = bestScore;
-        scoreMessage.textContent = getScoreMessage(bestScore);
-        blockSelects.forEach(select => {
-          select.disabled = true;
-        });
-        runCode.disabled = true;
-        result.textContent = "Success! The loop reads the touch, checks the piano key, and shows its LED pattern.";
-        celebrateSuccess();
-      } else if (blocks[0] !== "read") {
-        result.textContent = "Start by storing the result of piano.Touch() in item.";
-      } else if (blocks[1] !== "check") {
-        result.textContent = "Next, compare item with piano.TouchButton(piano.touch.C).";
-      } else if (blocks[2] !== "show") {
-        result.textContent = "Finish by showing the note pattern with basic.showLeds().";
-      } else {
-        result.textContent = "Read the touch, check the key, then show its LED pattern.";
-      }
-    });
-
-    resetCode.addEventListener("click", () => {
-      shuffleAllOptions();
-      attempts = 0;
-      bestScore = 0;
-      celebration.replaceChildren();
-      blockSelects.forEach(select => {
-        select.disabled = false;
-      });
-      runCode.disabled = false;
-      document.getElementById("attempts").textContent = "0";
-      document.getElementById("bestScore").textContent = "0";
-      scoreMessage.textContent = "";
-      result.textContent = "Choose the blocks that read the piano touch and display the note.";
-    });
-
-    shuffleAllOptions();
+    document.getElementById("unlockActivity").addEventListener("click", event => { const activity = document.getElementById("challengeSection"); activity.hidden = false; document.querySelector("#videoComplete span").textContent = "Activity unlocked. Find the bugs in Piano Messenger."; event.currentTarget.textContent = "Activity Ready"; event.currentTarget.disabled = true; activity.scrollIntoView({ behavior: "smooth", block: "start" }); });
+    function celebrateSuccess() { celebration.replaceChildren(); const message = document.createElement("div"); message.className = "celebration-message"; message.textContent = "Success!"; celebration.appendChild(message); const colors = ["#e8b95c", "#79b4d9", "#d28b9d", "#b7f3ce"]; for (let index = 0; index < 32; index++) { const piece = document.createElement("span"); piece.className = "confetti-piece"; piece.style.left = `${Math.random() * 100}%`; piece.style.setProperty("--confetti-color", colors[index % colors.length]); piece.style.setProperty("--confetti-drift", `${Math.random() * 180 - 90}px`); piece.style.animationDelay = `${Math.random() * .25}s`; celebration.appendChild(piece); } setTimeout(() => celebration.replaceChildren(), 2200); }
+    const showDrop = document.getElementById("showDrop");
+    document.querySelectorAll(".drag-block").forEach(block => block.addEventListener("dragstart", event => event.dataTransfer.setData("text/plain", block.dataset.dragValue)));
+    showDrop.addEventListener("dragover", event => { event.preventDefault(); showDrop.classList.add("over"); });
+    showDrop.addEventListener("dragleave", () => showDrop.classList.remove("over"));
+    showDrop.addEventListener("drop", event => { event.preventDefault(); showDrop.classList.remove("over"); const value = event.dataTransfer.getData("text/plain"); const result = document.getElementById("showResult"); if (value === "GHOST") { showDrop.textContent = "show GHOST"; showDrop.classList.add("fixed"); result.textContent = "Correct! The picture now matches the G key's message."; document.getElementById("sendStage").hidden = false; } else result.textContent = `Try again. The G key should show a GHOST, not ${value}.`; });
+    document.querySelectorAll("[data-message]").forEach(button => button.addEventListener("click", () => { const value = button.dataset.message; document.querySelectorAll("[data-message]").forEach(option => option.classList.remove("selected")); button.classList.add("selected"); const result = document.getElementById("sendResult"); if (value === "GHOST") { result.textContent = "Correct! The other TechnoPiano will receive GHOST."; document.querySelectorAll("[data-message]").forEach(option => option.disabled = true); document.getElementById("successStage").hidden = false; document.getElementById("tryStage").hidden = false; celebrateSuccess(); } else result.textContent = "Not quite. The picture being shown is GHOST, so send GHOST."; }));
+    const incorrectBlock = document.getElementById("incorrectBlock");
+    const replacementWrap = document.getElementById("replacementWrap");
+    incorrectBlock.addEventListener("click", () => { incorrectBlock.classList.add("selected"); replacementWrap.classList.add("visible"); document.getElementById("tryResult").textContent = "Correct! Now drag radio send \"UMBRELLA\" onto the selected block."; });
+    incorrectBlock.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); incorrectBlock.click(); } });
+    replacementWrap.querySelectorAll("[data-replacement-value]").forEach(block => block.addEventListener("dragstart", event => event.dataTransfer.setData("text/plain", block.dataset.replacementValue)));
+    incorrectBlock.addEventListener("dragover", event => { if (incorrectBlock.classList.contains("selected")) { event.preventDefault(); incorrectBlock.classList.add("over"); } });
+    incorrectBlock.addEventListener("dragleave", () => incorrectBlock.classList.remove("over"));
+    incorrectBlock.addEventListener("drop", event => { event.preventDefault(); incorrectBlock.classList.remove("over"); const value = event.dataTransfer.getData("text/plain"); const result = document.getElementById("tryResult"); if (value === "UMBRELLA") { incorrectBlock.textContent = 'radio send "UMBRELLA"'; incorrectBlock.classList.add("fixed"); result.textContent = "SUCCESS! You found the bug and fixed the A-key message."; celebrateSuccess(); } else result.textContent = "That message does not match the A key's intended output. Try radio send \"UMBRELLA\"."; });
   </script>
 </body>
 </html>
